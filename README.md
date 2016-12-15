@@ -2,6 +2,8 @@ Partition Render
 ====================================================================================
 Blender add-on: interruptable rendering by number of partitions
 
+Site: <a href="http://b3d.interplanety.ru/add-on-partition-render/">Description</a>
+
 ====================================================================================
 Installation
 
