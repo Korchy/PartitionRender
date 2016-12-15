@@ -14,7 +14,7 @@ Usage
 
 In Properties window - Render Tab - Partition Render subtab
 
-<img src="" title="Partition Render">
+<img src="http://b3d.interplanety.ru/wp-content/upload_content/2016/12/00-400x251.jpg" title="Partition Render">
 
 ====================================================================================
 Version history:
