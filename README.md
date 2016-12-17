@@ -22,5 +22,8 @@ In Properties window - Render Tab - Partition Render subtab
 Version history:
 
 0.0.1
-
 - This release
+
+0.0.2
+- Range selection added
+- Fixed an error with unsaved blender projects
