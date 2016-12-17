@@ -14,8 +14,8 @@ class PartRender(bpy.types.Operator):
     timer = None
     windowToRedrawCompositing = bpy.context.window_manager.windows[0].screen.areas[0]
     windowToRedrawCompositingType = 'INFO'
-    oldFileFormat = bpy.context.scene.render.image_settings.file_format
-    oldColorMode = bpy.context.scene.render.image_settings.color_mode
+    oldFileFormat = ''
+    oldColorMode = ''
 
     def execute(self, context):
         # прочитать текущую партицию из файла
@@ -232,8 +232,10 @@ def renderPartition(scene):
         bpy.app.handlers.scene_update_post.remove(renderPartition)
     # восстановить сохраненный формат файла
     # здесь т.к. если в onRenderPartitionFinished сразу восстанавливать - иногда ошибка неверного контекста
-    bpy.context.scene.render.image_settings.file_format = PartRender.oldFileFormat
-    bpy.context.scene.render.image_settings.color_mode = PartRender.oldColorMode
+    if PartRender.oldFileFormat:
+        bpy.context.scene.render.image_settings.file_format = PartRender.oldFileFormat
+    if PartRender.oldColorMode:
+        bpy.context.scene.render.image_settings.color_mode = PartRender.oldColorMode
     # запустить рендер очередной партиции
     return bpy.ops.render.partition_render()
 
