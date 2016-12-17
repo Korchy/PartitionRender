@@ -1,4 +1,5 @@
 import bpy
+import PartRender
 
 class PartitionRenderPanel(bpy.types.Panel):
     bl_idname = 'panel.partitionRenderPanel'
@@ -11,8 +12,29 @@ class PartitionRenderPanel(bpy.types.Panel):
         self.layout.operator('render.partition_render', icon = 'RENDER_REGION', text = 'Start/Continue Render')
         self.layout.prop(bpy.context.scene.partition_render_vars, 'xCut')
         self.layout.prop(bpy.context.scene.partition_render_vars, 'yCut')
-        # self.layout.prop(bpy.data.scenes[0].partition_render_vars, 'partitions')
+        self.layout.prop(bpy.context.scene.partition_render_vars, 'useRange')
+        row = self.layout.row()
+        row.prop(bpy.context.scene.partition_render_vars, 'rangeFrom')
+        row.prop(bpy.context.scene.partition_render_vars, 'rangeTo')
 
+def updateUseRange(self, context):
+    PartRender.PartRender.resetPartitions()
+
+def updateXYCut(self, context):
+    updateRangeFrom(self, context)
+    updateRangeTo(self, context)
+
+def updateRangeFrom(self, context):
+    if self.yCut * self.xCut < self.rangeFrom:
+        self.rangeFrom = self.xCut * self.yCut
+    if self.rangeFrom > self.rangeTo:
+        self.rangeTo = self.rangeFrom
+
+def updateRangeTo(self, context):
+    if self.yCut * self.xCut < self.rangeTo:
+        self.rangeTo = self.xCut * self.yCut
+    if self.rangeTo < self.rangeFrom:
+        self.rangeFrom = self.rangeTo
 
 class PartitionRenderVariables(bpy.types.PropertyGroup):
     xCut = bpy.props.IntProperty(
@@ -20,14 +42,38 @@ class PartitionRenderVariables(bpy.types.PropertyGroup):
         description = 'X Axis Number Of Blocks',
         subtype='UNSIGNED',
         default = 1,
-        min = 1
+        min = 1,
+        update = updateXYCut
     )
     yCut = bpy.props.IntProperty(
         name = 'Blocks By Y',
         description = 'Y Axis Number Of Blocks',
         subtype='UNSIGNED',
         default = 1,
-        min = 1
+        min = 1,
+        update = updateXYCut
+    )
+    useRange = bpy.props.BoolProperty(
+        name = 'Use Range',
+        description = 'Render partitions only from range',
+        default = False,
+        update = updateUseRange
+    )
+    rangeFrom = bpy.props.IntProperty(
+        name = 'Range From',
+        description = 'Start partition from range',
+        subtype='UNSIGNED',
+        default = 1,
+        min = 1,
+        update = updateRangeFrom
+    )
+    rangeTo = bpy.props.IntProperty(
+        name = 'Range To',
+        description = 'End partition from range',
+        subtype='UNSIGNED',
+        default = 1,
+        min = 1,
+        update = updateRangeTo
     )
 
 class PartitionRenderStatic(bpy.types.PropertyGroup):
@@ -46,7 +92,6 @@ class PartitionRenderStatic(bpy.types.PropertyGroup):
         description = 'Temporary file extension to store partitions',
         default = 'exr'
     )
-
 
 def register():
     bpy.utils.register_class(PartitionRenderPanel)
