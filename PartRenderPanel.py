@@ -1,5 +1,4 @@
 import bpy
-import PartRender
 
 class PartitionRenderPanel(bpy.types.Panel):
     bl_idname = 'panel.partitionRenderPanel'
@@ -18,6 +17,7 @@ class PartitionRenderPanel(bpy.types.Panel):
         row.prop(bpy.context.scene.partition_render_vars, 'rangeTo')
 
 def updateUseRange(self, context):
+    import PartRender
     PartRender.PartRender.resetPartitions()
 
 def updateXYCut(self, context):
