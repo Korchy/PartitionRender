@@ -16,11 +16,11 @@ class PartRender(bpy.types.Operator):
     windowToRedrawCompositingType = 'INFO'
     oldFileFormat = ''
     oldColorMode = ''
+    executing = False
 
     def execute(self, context):
         # прочитать текущую партицию из файла
-        # если файла нет - первая и создать
-        self.getInfoFileName()
+        self.__class__.executing = True
         self.getPartitionNumberToRender()
         if not self.checkFinish():
             # запуск текущей партиции на рендер
@@ -28,7 +28,8 @@ class PartRender(bpy.types.Operator):
         else:
             # окончание рендера
             print('Finished all partitions')
-            self.resetPartitions()
+            self.__class__.executing = False
+            self.reset()
             # формирование нода для композитинга - выполняется в модальном режиме, чтобы окно композитинга обновилось
             self.timer = context.window_manager.event_timer_add(time_step = 0.1, window = context.window)
             context.window_manager.modal_handler_add(self)
@@ -38,11 +39,14 @@ class PartRender(bpy.types.Operator):
         # modal execution
         self.createCompositingNodes()
         context.window_manager.event_timer_remove(self.timer)
+        self.reset()
         return {'FINISHED'}
 
     def getPartitionNumberToRender(self):
         # получение номера партиции для рендера
+        self.getInfoFileName()
         if self.__class__.currentPartitionNumber == 0:
+            # если файла нет - первая и создать
             if os.path.exists(self.__class__.infoFile):
                 with open(self.__class__.infoFile) as currentFile:
                     jsonData = json.load(currentFile)
@@ -94,12 +98,24 @@ class PartRender(bpy.types.Operator):
             return {'FINISHED'}
 
     @classmethod
-    def resetPartitions(cls):
+    def reset(cls):
+        cls.getInfoFileName()
         cls.currentPartitionNumber = 0
         if cls.infoFile and os.path.exists(cls.infoFile):
             os.remove(cls.infoFile)
         if bpy.context.scene.render.use_border:
             bpy.context.scene.render.use_border = False
+        return {'FINISHED'}
+
+    @classmethod
+    def clear(cls):
+        cls.reset()
+        if cls.dirPath and os.path.exists(cls.dirPath):
+            for currentFile in os.listdir(cls.dirPath):
+                os.remove(cls.dirPath + os.sep + currentFile)
+            os.rmdir(cls.dirPath)
+        cls.dirPath = ''
+        cls.infoFile = ''
         return {'FINISHED'}
 
     def createCompositingNodes(self):
@@ -108,7 +124,7 @@ class PartRender(bpy.types.Operator):
         PartRender.windowToRedrawCompositing = bpy.context.window_manager.windows[0].screen.areas[0]
         PartRender.windowToRedrawCompositingType = bpy.context.window_manager.windows[0].screen.areas[0].type
         # Переключить окно в режим композитинга. Иначе (т.к. окна не обновляются во время выполнения скрипта) не
-        # происходит обновления нодов в композитинге. Решение - показать окно композитинга. Аддон должен работать
+        # происходит обновления нодов в композитинге. Решение - показать окно композитинга. Оператор должен работать
         # в модальном режиме. После обновления (по событию обновления сцены) можно вернуть окно в прежний режим
         bpy.context.window_manager.windows[0].screen.areas[0].type = 'NODE_EDITOR'
         bpy.context.window_manager.windows[0].screen.areas[0].spaces.active.tree_type = 'CompositorNodeTree'
@@ -171,20 +187,21 @@ class PartRender(bpy.types.Operator):
             bpy.app.handlers.scene_update_post.append(returnAreaAfterCompositingRedraw)
         return {'FINISHED'}
 
-    def getInfoFileName(self):
-        if not self.__class__.dirPath:
+    @classmethod
+    def getInfoFileName(cls):
+        if not cls.dirPath:
             if bpy.data.filepath:
-                self.__class__.dirPath = os.path.dirname(bpy.data.filepath) + os.path.sep + os.path.splitext(os.path.basename(bpy.data.filepath))[0]
+                cls.dirPath = os.path.dirname(bpy.data.filepath) + os.path.sep + os.path.splitext(os.path.basename(bpy.data.filepath))[0]
             else:
-                self.__class__.dirPath = os.path.dirname(bpy.context.user_preferences.filepaths.temporary_directory) + os.path.sep + 'partition_render_unsaved'
-            if not os.path.exists(self.__class__.dirPath):
-                os.makedirs(self.__class__.dirPath)
-        if not self.__class__.infoFile:
+                cls.dirPath = os.path.dirname(bpy.context.user_preferences.filepaths.temporary_directory) + os.path.sep + 'partition_render_unsaved'
+        if not os.path.exists(cls.dirPath):
+            os.makedirs(cls.dirPath)
+        if not cls.infoFile:
             if bpy.data.filepath:
                 infoFileName = os.path.splitext(os.path.basename(bpy.data.filepath))[0]+'_pr.json'
             else:
                 infoFileName = 'partition_render_unsaved_pr.json'
-            self.__class__.infoFile = self.__class__.dirPath + os.path.sep + infoFileName
+            cls.infoFile = cls.dirPath + os.path.sep + infoFileName
         return {'FINISHED'}
 
     def checkFinish(self):
@@ -208,13 +225,15 @@ def onRenderPartitionFinished(scene):
     bpy.app.handlers.render_complete.remove(onRenderPartitionFinished)
     bpy.app.handlers.render_cancel.remove(onRenderPartitionCancel)
     # сохранить партицию
-    partPath = PartRender.dirPath + os.path.sep + 'p_' + str(PartRender.currentPartitionNumber) + '.' + bpy.context.scene.partition_render_static.tmpFileExtension
-    PartRender.oldFileFormat = bpy.context.scene.render.image_settings.file_format
-    PartRender.oldColorMode = bpy.context.scene.render.image_settings.color_mode
-    bpy.context.scene.render.image_settings.file_format = bpy.context.scene.partition_render_static.tmpFileFormat
-    bpy.context.scene.render.image_settings.color_mode = bpy.context.scene.partition_render_static.tmpColorMode
-    bpy.data.images['Render Result'].save_render(filepath = partPath)
+    if PartRender.dirPath:
+        partPath = PartRender.dirPath + os.path.sep + 'p_' + str(PartRender.currentPartitionNumber) + '.' + bpy.context.scene.partition_render_static.tmpFileExtension
+        PartRender.oldFileFormat = bpy.context.scene.render.image_settings.file_format
+        PartRender.oldColorMode = bpy.context.scene.render.image_settings.color_mode
+        bpy.context.scene.render.image_settings.file_format = bpy.context.scene.partition_render_static.tmpFileFormat
+        bpy.context.scene.render.image_settings.color_mode = bpy.context.scene.partition_render_static.tmpColorMode
+        bpy.data.images['Render Result'].save_render(filepath = partPath)
     # установить номер следующей партиции
+    PartRender.getInfoFileName()
     setNextPartition()
     # запустить продолжение обработки
     if renderPartition not in bpy.app.handlers.scene_update_post:
@@ -224,6 +243,11 @@ def onRenderPartitionFinished(scene):
 def onRenderPartitionCancel(scene):
     bpy.app.handlers.render_complete.remove(onRenderPartitionFinished)
     bpy.app.handlers.render_cancel.remove(onRenderPartitionCancel)
+    PartRender.executing = False
+    # Перерисовать окно, иначе обновляет с задержкой
+    for area in bpy.context.window_manager.windows[0].screen.areas:
+        if area.spaces.active.type == 'PROPERTIES':
+            area.tag_redraw()
     print('Canceled on partition number '+str(PartRender.currentPartitionNumber))
     return {'FINISHED'}
 
