@@ -16,7 +16,7 @@ Usage
 
 In Properties window - Render Tab - Partition Render subtab
 
-<img src="http://b3d.interplanety.ru/wp-content/upload_content/2016/12/00-1-400x247.jpg" title="Partition Render">
+<img src="http://b3d.interplanety.ru/wp-content/upload_content/2016/12/00-2-400x253.jpg" title="Partition Render">
 
 ====================================================================================
 Version history:
@@ -27,3 +27,7 @@ Version history:
 0.0.2
 - Range selection added
 - Fixed an error with unsaved blender projects
+
+0.0.3
+- Added "Reset" and "Clear" buttons
+- Checking "Use Range" checkbox resets partition to the first
