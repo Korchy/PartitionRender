@@ -1,4 +1,5 @@
 import bpy
+import sys
 
 class PartitionRenderPanel(bpy.types.Panel):
     bl_idname = 'panel.partitionRenderPanel'
@@ -11,14 +12,41 @@ class PartitionRenderPanel(bpy.types.Panel):
         self.layout.operator('render.partition_render', icon = 'RENDER_REGION', text = 'Start/Continue Render')
         self.layout.prop(bpy.context.scene.partition_render_vars, 'xCut')
         self.layout.prop(bpy.context.scene.partition_render_vars, 'yCut')
-        self.layout.prop(bpy.context.scene.partition_render_vars, 'useRange')
+        row = self.layout.row()
+        row.prop(bpy.context.scene.partition_render_vars, 'useRange')
+        row.alignment = 'RIGHT'
+        row.operator('render.partition_render_reset', icon = 'X', text = 'Reset')
+        row.operator('render.partition_render_clear', icon = 'GHOST', text = 'Clear')
         row = self.layout.row()
         row.prop(bpy.context.scene.partition_render_vars, 'rangeFrom')
         row.prop(bpy.context.scene.partition_render_vars, 'rangeTo')
 
+class PartitionRenderReset(bpy.types.Operator):
+    bl_idname = 'render.partition_render_reset'
+    bl_label = 'Reset'
+
+    @classmethod
+    def poll(cls, context):
+        return not sys.modules[modulesNames['PartRender']].PartRender.executing
+
+    def execute(self, context):
+        sys.modules[modulesNames['PartRender']].PartRender.reset()
+        return {'FINISHED'}
+
+class PartitionRenderClear(bpy.types.Operator):
+    bl_idname = 'render.partition_render_clear'
+    bl_label = 'Clear'
+
+    @classmethod
+    def poll(cls, context):
+        return not sys.modules[modulesNames['PartRender']].PartRender.executing
+
+    def execute(self, context):
+        sys.modules[modulesNames['PartRender']].PartRender.clear()
+        return {'FINISHED'}
+
 def updateUseRange(self, context):
-    from . import PartRender
-    PartRender.PartRender.resetPartitions()
+    sys.modules[modulesNames['PartRender']].PartRender.reset()
 
 def updateXYCut(self, context):
     updateRangeFrom(self, context)
@@ -99,9 +127,14 @@ def register():
     bpy.types.Scene.partition_render_vars = bpy.props.PointerProperty(type = PartitionRenderVariables)
     bpy.utils.register_class(PartitionRenderStatic)
     bpy.types.Scene.partition_render_static = bpy.props.PointerProperty(type = PartitionRenderStatic)
+    bpy.utils.register_class(PartitionRenderReset)
+    bpy.utils.register_class(PartitionRenderClear)
 
 def unregister():
-    del bpy.types.Scene.partition_render_vars
+    bpy.utils.unregister_class(PartitionRenderClear)
+    bpy.utils.unregister_class(PartitionRenderReset)
+    del bpy.types.Scene.partition_render_static
     bpy.utils.unregister_class(PartitionRenderStatic)
+    del bpy.types.Scene.partition_render_vars
     bpy.utils.unregister_class(PartitionRenderVariables)
     bpy.utils.unregister_class(PartitionRenderPanel)
