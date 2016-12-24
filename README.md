@@ -7,9 +7,7 @@ Site: <a href="http://b3d.interplanety.ru/add-on-partition-render/">Description<
 ====================================================================================
 Installation
 
-User Preferences - Addons - Install from file
-    
-    select downloaded archive
+User Preferences - Addons - Install from file - select downloaded archive
 
 ====================================================================================
 Usage
