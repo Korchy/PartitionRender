@@ -21,6 +21,7 @@ class PartRender(bpy.types.Operator):
     def execute(self, context):
         # прочитать текущую партицию из файла
         self.__class__.executing = True
+        self.clearCompositingNodes()
         self.getPartitionNumberToRender()
         if not self.checkFinish():
             # запуск текущей партиции на рендер
@@ -179,13 +180,23 @@ class PartRender(bpy.types.Operator):
         # добавить построенную связку в группу и в композитинг
         nodesField = bpy.context.scene.node_tree
         groupNode = nodesField.nodes.new(type = 'CompositorNodeGroup')
+        groupNode.location = (-100, -200)
         groupNode.node_tree = group
-        # Последняя связка
-        nodesField.links.new(groupNode.outputs['Out'], nodesField.nodes['Composite'].inputs['Image'])
+        groupNode.name = 'partitionGroup'
+        # Composite
+        currentComposite = nodesField.nodes.new(type = 'CompositorNodeComposite')
+        currentComposite.location = (100, -200)
+        currentComposite.name = 'partitionComposite'
+        nodesField.links.new(groupNode.outputs['Out'], currentComposite.inputs['Image'])
         # вернуть окно
         if returnAreaAfterCompositingRedraw not in bpy.app.handlers.scene_update_post:
             bpy.app.handlers.scene_update_post.append(returnAreaAfterCompositingRedraw)
         return {'FINISHED'}
+
+    def clearCompositingNodes(self):
+        for currentNode in bpy.context.scene.node_tree.nodes:
+            if currentNode.name == 'partitionGroup' or currentNode.name == 'partitionComposite':
+                bpy.context.scene.node_tree.nodes.remove(currentNode)
 
     @classmethod
     def getInfoFileName(cls):
