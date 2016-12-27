@@ -29,3 +29,6 @@ Version history:
 0.0.3
 - Added "Reset" and "Clear" buttons
 - Checking "Use Range" checkbox resets partition to the first
+
+0.0.4
+- Compositing nodes for final image combining connected to a separate output Compositing node and removed each time partition render starts.
