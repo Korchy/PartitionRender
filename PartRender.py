@@ -194,7 +194,7 @@ class PartRender(bpy.types.Operator):
         return {'FINISHED'}
 
     def clearCompositingNodes(self):
-        if context.scene.node_tree:
+        if bpy.context.scene.node_tree:
             for currentNode in bpy.context.scene.node_tree.nodes:
                 if currentNode.name == 'partitionGroup' or currentNode.name == 'partitionComposite':
                     bpy.context.scene.node_tree.nodes.remove(currentNode)
