@@ -20,6 +20,7 @@ class PartitionRenderPanel(bpy.types.Panel):
         row = self.layout.row()
         row.prop(bpy.context.scene.partition_render_vars, 'rangeFrom')
         row.prop(bpy.context.scene.partition_render_vars, 'rangeTo')
+        self.layout.prop(bpy.context.scene.partition_render_vars, 'saveMultilayer')
 
 class PartitionRenderReset(bpy.types.Operator):
     bl_idname = 'render.partition_render_reset'
@@ -47,6 +48,12 @@ class PartitionRenderClear(bpy.types.Operator):
 
 def updateUseRange(self, context):
     sys.modules[modulesNames['PartRender']].PartRender.reset()
+
+def updateSaveMultilayer(self, context):
+    if(self.saveMultilayer == True):
+        bpy.context.scene.partition_render_static.tmpFileFormat = 'OPEN_EXR_MULTILAYER'
+    else:
+        bpy.context.scene.partition_render_static.tmpFileFormat = 'OPEN_EXR'
 
 def updateXYCut(self, context):
     updateRangeFrom(self, context)
@@ -102,6 +109,12 @@ class PartitionRenderVariables(bpy.types.PropertyGroup):
         default = 1,
         min = 1,
         update = updateRangeTo
+    )
+    saveMultilayer = bpy.props.BoolProperty(
+        name = 'Save Multilayer',
+        description = 'Save multilayer data in partitions',
+        default = False,
+        update = updateSaveMultilayer
     )
 
 class PartitionRenderStatic(bpy.types.PropertyGroup):
