@@ -2,7 +2,7 @@ bl_info = {
     'name': 'Partition Render',
     'category': 'Render',
     'author': 'Nikita Akimov',
-    'version': (0, 0, 4),
+    'version': (0, 0, 5),
     'blender': (2, 78, 0),
     'location': 'Properties window > Render tab > Partition Render',
     'wiki_url': 'http://b3d.interplanety.ru/add-on-partition-render/',
