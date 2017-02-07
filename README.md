@@ -14,7 +14,7 @@ Usage
 
 In Properties window - Render Tab - Partition Render subtab
 
-<img src="http://b3d.interplanety.ru/wp-content/upload_content/2016/12/00-2-400x253.jpg" title="Partition Render">
+<img src="http://b3d.interplanety.ru/wp-content/upload_content/2017/02/00-400x253.jpg" title="Partition Render">
 
 ====================================================================================
 Version history:
@@ -32,3 +32,6 @@ Version history:
 
 0.0.4
 - Compositing nodes for final image combining connected to a separate output Compositing node and removed each time partition render starts.
+
+0.0.5
+- Added "SaveMultilayer" checkbox. If the checkbox is on - temporary render results saved in OpenEXR Multilayer format including all layers and passes for future use. Only finished image compiles automatically, different passes need to compile manually.
