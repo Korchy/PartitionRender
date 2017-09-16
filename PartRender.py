@@ -170,7 +170,7 @@ class PartRender(bpy.types.Operator):
         for i in range(partitionsStart, partitionsEnd):
             imageName = 'p_' + str(i + 1) + '.' + bpy.context.scene.partition_render_static.tmpFileExtension
             if os.path.exists(self.__class__.dirPath + os.path.sep + imageName):
-                bpy.ops.image.open(filepath = self.__class__.dirPath + os.path.sep + imageName, directory = self.__class__.dirPath + os.path.sep)
+                bpy.data.images.load(filepath = self.__class__.dirPath + os.path.sep + imageName, check_existing = True)
             # Image
             currentImageNode = group.nodes.new(type = 'CompositorNodeImage')
             currentImageNode.image = bpy.data.images['p_' + str(i + 1) + '.' + bpy.context.scene.partition_render_static.tmpFileExtension]
