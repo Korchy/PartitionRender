@@ -17,6 +17,8 @@ In Properties window - Render Tab - Partition Render subtab
 <img src="http://b3d.interplanety.ru/wp-content/upload_content/2017/02/00-400x253.jpg" title="Partition Render">
 
 ===============================================================================
+Tested with Blender version: 2.78, 2.79
+===============================================================================
 Version history:
 
 0.0.1
