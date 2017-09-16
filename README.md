@@ -19,7 +19,8 @@ In Properties window - Render Tab - Partition Render subtab
 ===============================================================================
 Tested with Blender versions:
 
-2.78, 2.79
+2.79
+2.78
 
 ===============================================================================
 Version history:
