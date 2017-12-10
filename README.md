@@ -15,7 +15,7 @@ User Preferences - Addons - Install Add-on from File - select downloaded archive
 
 Location: Properties window - Render Tab - Partition Render subtab
 
-<img src="http://b3d.interplanety.ru/wp-content/upload_content/2017/02/00-400x253.jpg" title="Partition Render">
+<img src="https://b3d.interplanety.org/wp-content/upload_content/2017/12/01-400x208.jpg" title="Partition Render">
 
 **Tested with Blender versions:**
 
