@@ -1,28 +1,27 @@
-Partition Render
-===============================================================================
+#Partition Render
+
 Blender add-on: interruptable rendering by number of partitions
 
-Site: <a href="http://b3d.interplanety.ru/add-on-partition-render/">Description</a>
+Author: Nikita Akimov interplanety@interplanety.org
 
-===============================================================================
-Installation
+<a href="http://b3d.interplanety.org/add-on-partition-render/">Add-on web site</a>
 
-User Preferences - Addons - Install from file - select downloaded archive
 
-===============================================================================
-Usage
+**Installation**
 
-In Properties window - Render Tab - Partition Render subtab
+User Preferences - Addons - Install Add-on from File - select downloaded archive
+
+**Usage**
+
+Location: Properties window - Render Tab - Partition Render subtab
 
 <img src="http://b3d.interplanety.ru/wp-content/upload_content/2017/02/00-400x253.jpg" title="Partition Render">
 
-===============================================================================
-Tested with Blender versions:
+**Tested with Blender versions:**
 
 2.78, 2.79
 
-===============================================================================
-Version history:
+**Version history:**
 
 0.0.1
 - This release

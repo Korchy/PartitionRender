@@ -1,3 +1,6 @@
+# Nikita Akimov
+# interplanety@interplanety.org
+
 import bpy
 import sys
 

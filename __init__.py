@@ -1,12 +1,15 @@
+# Nikita Akimov
+# interplanety@interplanety.org
+
 bl_info = {
     'name': 'Partition Render',
     'category': 'Render',
     'author': 'Nikita Akimov',
     'version': (0, 0, 5),
-    'blender': (2, 78, 0),
+    'blender': (2, 79, 0),
     'location': 'Properties window > Render tab > Partition Render',
-    'wiki_url': 'http://b3d.interplanety.ru/add-on-partition-render/',
-    'tracker_url': 'http://b3d.interplanety.ru/add-on-partition-render/',
+    'wiki_url': 'http://b3d.interplanety.org/add-on-partition-render/',
+    'tracker_url': 'http://b3d.interplanety.org/add-on-partition-render/',
     'description': 'Allows to split the render into partitions and render them separately'
 }
 
