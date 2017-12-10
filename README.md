@@ -4,7 +4,7 @@ Blender add-on: interruptable rendering by number of partitions
 
 Author: Nikita Akimov interplanety@interplanety.org
 
-<a href="http://b3d.interplanety.org/add-on-partition-render/">Add-on web site</a>
+<a href="https://b3d.interplanety.org/en/partitionrender-add-on/">Add-on web site</a>
 
 
 **Installation**
