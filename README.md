@@ -1,4 +1,4 @@
-#Partition Render
+# Partition Render
 
 Blender add-on: interruptable rendering by number of partitions
 
