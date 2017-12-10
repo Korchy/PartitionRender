@@ -8,8 +8,8 @@ bl_info = {
     'version': (0, 0, 5),
     'blender': (2, 79, 0),
     'location': 'Properties window > Render tab > Partition Render',
-    'wiki_url': 'http://b3d.interplanety.org/add-on-partition-render/',
-    'tracker_url': 'http://b3d.interplanety.org/add-on-partition-render/',
+    'wiki_url': 'https://b3d.interplanety.org/en/partitionrender-add-on/',
+    'tracker_url': 'https://b3d.interplanety.org/en/partitionrender-add-on/',
     'description': 'Allows to split the render into partitions and render them separately'
 }
 
