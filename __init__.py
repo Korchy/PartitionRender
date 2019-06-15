@@ -1,6 +1,10 @@
 # Nikita Akimov
 # interplanety@interplanety.org
 
+from .addon import Addon
+import sys
+import importlib
+
 bl_info = {
     'name': 'Partition Render',
     'category': 'Render',
@@ -12,9 +16,6 @@ bl_info = {
     'tracker_url': 'https://b3d.interplanety.org/en/partitionrender-add-on/',
     'description': 'Allows to split the render into partitions and render them separately'
 }
-
-import sys
-import importlib
 
 modulesNames = ['RenderBorder', 'PartRender', 'PartRenderPanel']
 
@@ -32,17 +33,24 @@ for currentModuleFullName in modulesFullNames.values():
         globals()[currentModuleFullName] = importlib.import_module(currentModuleFullName)
         setattr(globals()[currentModuleFullName], 'modulesNames', modulesFullNames)
 
+
 def register():
-    for currentModuleName in modulesFullNames.values():
-        if currentModuleName in sys.modules:
-            if hasattr(sys.modules[currentModuleName], 'register'):
-                sys.modules[currentModuleName].register()
+    if not Addon.dev_mode():
+        for currentModuleName in modulesFullNames.values():
+            if currentModuleName in sys.modules:
+                if hasattr(sys.modules[currentModuleName], 'register'):
+                    sys.modules[currentModuleName].register()
+    else:
+        print('It seems you are trying to use the dev version of the ' + bl_info['name'] + ' add-on. It may work not properly. Please download and use the release version!')
+
 
 def unregister():
-    for currentModuleName in modulesFullNames.values():
-        if currentModuleName in sys.modules:
-            if hasattr(sys.modules[currentModuleName], 'unregister'):
-                sys.modules[currentModuleName].unregister()
+    if not Addon.dev_mode():
+        for currentModuleName in modulesFullNames.values():
+            if currentModuleName in sys.modules:
+                if hasattr(sys.modules[currentModuleName], 'unregister'):
+                    sys.modules[currentModuleName].unregister()
+
 
 if __name__ == "__main__":
     register()
